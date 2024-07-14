@@ -1,0 +1,4 @@
+SOURCE = \
+variable_t_icoFoam.C \
+
+# sources
