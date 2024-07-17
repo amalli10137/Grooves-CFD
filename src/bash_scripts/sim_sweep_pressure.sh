@@ -1,14 +1,14 @@
 #!/bin/bash
 
-kick_pressure_sci = REPLACE_THIS_WITH_KICK_PRESSURE_SCI
-base_pressure_sci = REPLACE_THIS_WITH_BASE_PRESSURE_SCI
+#to be run from python control script
+kick_pressure_sci=REPLACE_THIS_WITH_KICK_PRESSURE_SCI
+base_pressure_sci=REPLACE_THIS_WITH_BASE_PRESSURE_SCI
 
-cd "cases"
+cd "data/pressure_sweep/cases"
 mkdir -p "$base_pressure_sci"
 cd ..
-cp -R "SteadyState_base" "cases/$base_pressure_sci/SteadyState_$base_pressure_sci"
-#mv "SteadyState_$n" "${n}e-6"
-cd "cases/$base_pressure_sci/SteadyState_$base_pressure_sci"
+cp -R "steady_state_base" "cases/$base_pressure_sci/steady_state_$base_pressure_sci"
+cd "cases/$base_pressure_sci/steady_state_$base_pressure_sci"
 cd 0
 sed -i "s/replace_w_PD/$base_pressure_sci/" p
 cd .. 
@@ -18,11 +18,11 @@ cd ..
 cd ..
 cd ..
 
-cp -R "icoFoam_base" "cases/$base_pressure_sci/icoFoam_$base_pressure_sci"
+cp -R "icofoam_base" "cases/$base_pressure_sci/icofoam_$base_pressure_sci"
 cd "cases/$base_pressure_sci"
-cp -f "SteadyState_$base_pressure_sci/${array[0]}/p" "icoFoam_$base_pressure_sci/0/p"
-cp -f "SteadyState_$base_pressure_sci/${array[0]}/U" "icoFoam_$base_pressure_sci/0/U"
-cd "icoFoam_$base_pressure_sci"
+cp -f "steady_state_$base_pressure_sci/${array[0]}/p" "icofoam_$base_pressure_sci/0/p"
+cp -f "steady_state_$base_pressure_sci/${array[0]}/U" "icofoam_$base_pressure_sci/0/U"
+cd "icofoam_$base_pressure_sci"
 cd 0
 sed -i "/jumpTable/d" p
 sed -i "s/jump            uniform -.*/jumpTable       table ((0 -$base_pressure_sci) (25 -$base_pressure_sci) (25.5 -$kick_pressure_sci) (26 -$base_pressure_sci));/g;" p
@@ -31,4 +31,5 @@ variable_t_icoFoam
 cd ..
 cd ..
 cd ..
-
+cd ..
+cd ..
