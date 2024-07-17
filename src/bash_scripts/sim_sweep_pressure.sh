@@ -1,9 +1,7 @@
 #!/bin/bash
-#10..45..5
 
-#run openfoam-docker in the openfoam folder directory
-kick_pressure_sci = 0
-base_pressure_sci = 0
+kick_pressure_sci = REPLACE_THIS_WITH_KICK_PRESSURE_SCI
+base_pressure_sci = REPLACE_THIS_WITH_BASE_PRESSURE_SCI
 
 cd "cases"
 mkdir -p "$base_pressure_sci"

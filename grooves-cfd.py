@@ -24,16 +24,11 @@ def main():
         print("Exiting the script.")
         sys.exit(0) 
 
-    kick_pressure_value, base_pressures, groove_heights = run_groove_height_sweep(args.base_pressures, args.kick_pressure, args.groove_heights)
-    print("kick_pressure_value : " + str(kick_pressure_value))
-    print("base_pressures : ")
-    print(base_pressures)
-    for base_pressure in base_pressures:
-        print(str(base_pressure))
-    print("groove_heights: ")
-    print(groove_heights)
-    for groove_height in groove_heights:
-         print(str(groove_height))
+    if(args.pressure_sweep and not(args.groove_height_sweep)):
+         run_pressure_sweep(args.base_pressures, args.kick_pressure)
+
+    if(args.groove_height_sweep):
+         run_groove_height_sweep(args.base_pressures, args.kick_pressure, args.groove_heights)
 
 def run_pressure_sweep(base_pressures, kick_pressure):
         
@@ -47,7 +42,10 @@ def run_pressure_sweep(base_pressures, kick_pressure):
         else:
             base_pressures = [float(i) for i in base_pressures[1:]]
         
-        return kick_pressure, base_pressures
+        for base_pressure in base_pressures:
+             
+
+        return 0
 
 def run_groove_height_sweep(base_pressures, kick_pressure, groove_heights):
         
@@ -70,7 +68,7 @@ def run_groove_height_sweep(base_pressures, kick_pressure, groove_heights):
         else:
             groove_heights = [float(i) for i in base_pressures[1:]]
         
-        return kick_pressure, base_pressures, groove_heights
+        return 0
     
 
     
