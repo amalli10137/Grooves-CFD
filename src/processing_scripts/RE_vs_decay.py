@@ -15,7 +15,7 @@ decay_rates = []
 for subfolder in os.listdir(base_dir):
     subfolder_path = os.path.join(base_dir, subfolder)
     # Ensure the subfolder name follows the pattern of scientific notation (e.g., 5e-6)
-    if os.path.isdir(subfolder_path) and re.match(r'^\d+e-\d+$', subfolder):
+    if os.path.isdir(subfolder_path): #and re.match(r'^\d+e-\d+$', subfolder):
         re_file_path = os.path.join(subfolder_path, 'RE.txt')
         if os.path.isfile(re_file_path):
             with open(re_file_path, 'r') as file:

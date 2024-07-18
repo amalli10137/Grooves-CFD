@@ -3,7 +3,7 @@ import os
 import csv
 
 def get_plot_over_time(cell_ids, number):
-    base_dir = "cases/" + number + "e-6/icoFoam_" + number
+    base_dir = "data/"+sys.argv[3]+"/cases/" + number + "/icofoam_" + number
     output_file = os.path.join(base_dir, "../U_vs_time.csv")
     
     # Filter out non-numeric directories

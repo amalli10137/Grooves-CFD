@@ -16,6 +16,8 @@ def main():
     parser.add_argument('--groove-height-sweep', help='To run a sweep of groove heights.', action='store_true')
     parser.add_argument('--groove-heights', type=str, help='Specifies heights of grooves. Provide either a list of values in scientific notation or an iteration "start, stop, step"')
 
+    parser.add_argument('--process', help='To only process data in cases folder.', action='store_true')
+    parser.add_argument('--run', help='To only run sweeps without processing.', action='store_true')
     parser.add_argument('--new-sweep', help="For when you want to start a new sweep.", action = 'store_true')
 
     args = parser.parse_args()
@@ -29,7 +31,7 @@ def main():
         sys.exit(0) 
 
     if(args.pressure_sweep and not(args.groove_height_sweep)):
-         run_pressure_sweep(args.base_pressures, args.kick_pressure)
+         run_pressure_sweep(args.base_pressures, args.kick_pressure, args.process, args.run)
 
     if(args.groove_height_sweep):
          run_groove_height_sweep(args.base_pressures, args.kick_pressure, args.groove_heights)
@@ -112,7 +114,7 @@ def float_to_scientific_notation(number):
     # Reassemble the scientific notation
     return f"{coefficient}e{int(exponent)}"
 
-def run_pressure_sweep(base_pressures, kick_pressure):
+def run_pressure_sweep(base_pressures, kick_pressure, process, run):
 
         replace_nth_line("src/bash_scripts/sim_sweep_pressure.sh", 4, f"kick_pressure_sci={kick_pressure}")
         
@@ -129,18 +131,26 @@ def run_pressure_sweep(base_pressures, kick_pressure):
         print("Base pressure list: " + str(base_pressures))
         print("Kick pressure: " + kick_pressure)
         
-        for base_pressure in base_pressures:
-            replace_nth_line("src/bash_scripts/sim_sweep_pressure.sh", 5, f"base_pressure_sci={base_pressure}")
-            run_openfoam_command("src/bash_scripts/sim_sweep_pressure.sh")
+        #running simulations
+        if(run):
+
+            for base_pressure in base_pressures:
+                replace_nth_line("src/bash_scripts/sim_sweep_pressure.sh", 5, f"base_pressure_sci={base_pressure}")
+                run_openfoam_command("src/bash_scripts/sim_sweep_pressure.sh")
 
         #post processing
 
-        for base_pressure in base_pressures:
-            replace_nth_line("src/bash_scripts/post_processing.sh", 3, f"base_pressure_sci={base_pressure}")
-            subprocess.run(["./src/bash_scripts/post_processing.sh"])
+        if(process):
 
-        subprocess.run(['python3', 'src/processing_scripts/get_grid_plots.py', "data/pressure_sweep/cases"])
-        subprocess.run(['python3', 'src/processing_scripts/RE_vs_decay.py', "data/pressure_sweep/cases"])
+            replace_nth_line("src/bash_scripts/post_processing.sh", 4, 'sweep_type="pressure_sweep"')
+
+
+            for base_pressure in base_pressures:
+                replace_nth_line("src/bash_scripts/post_processing.sh", 3, f"base_pressure_sci={base_pressure}")
+                subprocess.run(["./src/bash_scripts/post_processing.sh"])
+
+            subprocess.run(['python3', 'src/processing_scripts/get_grid_plots.py', "data/pressure_sweep/cases"])
+            subprocess.run(['python3', 'src/processing_scripts/RE_vs_decay.py', "data/pressure_sweep/cases"])
 
 
         return 0

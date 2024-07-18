@@ -93,10 +93,13 @@ def plot_y_velocity_from_csv(csv_file, output_file, re_file, max_time=None):
     plt.savefig(output_file)
     plt.close()
 
+    with open(re_file, "a") as file1:
+        file1.write("\n"+str(popt[1]))
+
 if __name__ == "__main__":
     
-    csv_file = "cases/" + sys.argv[1] + "e-6/U_vs_time.csv"
-    output_file = "cases/" + sys.argv[1] + "e-6/Uy_vs_time.png"
-    re_file = "cases/" + sys.argv[1] + "e-6/RE.txt"
-    max_time = 200  # Set the maximum time to be plotted, or None to plot all data
+    csv_file = "data/"+sys.argv[2]+"/cases/" + sys.argv[1] + "/U_vs_time.csv"
+    output_file = "data/"+sys.argv[2]+"/cases/" + sys.argv[1] + "/Uy_vs_time.png"
+    re_file = "data/"+sys.argv[2]+"/cases/" + sys.argv[1] + "/RE.txt"
+    max_time = None  # Set the maximum time to be plotted, or None to plot all data
     plot_y_velocity_from_csv(csv_file, output_file, re_file, max_time)

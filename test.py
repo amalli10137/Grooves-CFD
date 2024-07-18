@@ -1,6 +1,7 @@
 import os
 import pexpect
 import numpy as np
+import subprocess
 
 def run_openfoam_command(script_path):
     try:
@@ -54,7 +55,7 @@ def replace_string_in_file(file_path, search_string, replace_string):
     with open(file_path, 'w') as file:
         file.write(data)
 
-def main():
+def main_old():
         
         np.set_printoptions(formatter={'float': '{:.0e}'.format})
 
@@ -71,6 +72,36 @@ def main():
 
         # Continue with the rest of the script
         print("Continuing with the rest of the script...")
+
+def replace_nth_line(file_path, n, new_line):
+    # Read the file contents into a list
+    with open(file_path, 'r') as file:
+        lines = file.readlines()
+    
+    # Check if the specified line number is valid
+    if n > len(lines) or n < 1:
+        print(f"Line number {n} is out of range.")
+        return
+    
+    # Replace the nth line (n-1 because list index starts from 0)
+    lines[n-1] = new_line + '\n'
+    
+    # Write the updated list of lines back to the file
+    with open(file_path, 'w') as file:
+        file.writelines(lines)
+
+
+def main():
+    replace_nth_line("src/bash_scripts/post_processing.sh", 4, 'sweep_type="pressure_sweep"')
+
+
+    for base_pressure in ['7e-6', '1e-5', '1.3e-5', '1.6e-5', '1.9e-5', '2.2e-5', '2.5e-5', '2.8e-5', '3.1e-5']:
+        replace_nth_line("src/bash_scripts/post_processing.sh", 3, f"base_pressure_sci={base_pressure}")
+        subprocess.run(["./src/bash_scripts/post_processing.sh"])
+
+    subprocess.run(['python3', 'src/processing_scripts/get_grid_plots.py', "data/pressure_sweep/cases"])
+    subprocess.run(['python3', 'src/processing_scripts/RE_vs_decay.py', "data/pressure_sweep/cases"])
+
 
 if __name__ == "__main__":
     main()
