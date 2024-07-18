@@ -2,12 +2,16 @@ import argparse
 import subprocess
 import sys
 import numpy as np
+import pexpect
+import os
+from decimal import Decimal, getcontext, ROUND_HALF_UP
+
 
 def main():
     parser = argparse.ArgumentParser(description="Control script for parameter sweeps with periodic grooved system in OpenFOAM.")
     parser.add_argument('--pressure-sweep', help='To run a sweep of pressure kicks.', action='store_true')
     parser.add_argument('--base-pressures', type=str, help='Specifies base pressures. Provide either a list of values in scientific notation or an iteration "iterate: start, stop, step"')
-    parser.add_argument('--kick-pressure', type=float, help='Specifies pressure of kick.')
+    parser.add_argument('--kick-pressure', type=str, help='Specifies pressure of kick.')
 
     parser.add_argument('--groove-height-sweep', help='To run a sweep of groove heights.', action='store_true')
     parser.add_argument('--groove-heights', type=str, help='Specifies heights of grooves. Provide either a list of values in scientific notation or an iteration "start, stop, step"')
@@ -30,7 +34,70 @@ def main():
     if(args.groove_height_sweep):
          run_groove_height_sweep(args.base_pressures, args.kick_pressure, args.groove_heights)
 
+def run_openfoam_command(script_path):
+    try:
+        # Check if the script file exists
+        if not os.path.isfile(script_path):
+            print(f"The script file {script_path} does not exist.")
+            return
+
+        # Spawn the openfoam-docker process
+        child = pexpect.spawn('openfoam-docker', timeout=None)
+        
+        # Wait for the prompt to indicate it's ready for a command
+        prompt = r'\$'  # Adjust this if the prompt is different
+        child.expect(prompt)
+        
+        # Construct the command to run the .sh script
+        script_command = f"./{script_path}"
+        
+        # Send the command to run the .sh script
+        child.sendline(script_command)
+        
+        # Wait for the command to complete by waiting for the prompt again
+        child.expect(prompt, timeout=None)
+
+        child.sendline("exit")
+        child.expect(pexpect.EOF)
+
+        print("Script executed successfully inside the OpenFOAM Docker container.")
+    except pexpect.exceptions.EOF as e:
+        print(f"EOF error: {e}")
+    except pexpect.exceptions.ExceptionPexpect as e:
+        print(f"An error occurred: {e}")
+    finally:
+        if child.isalive():
+            child.terminate()
+
+def replace_string_in_file(file_path, old_string, new_string):
+    with open(file_path, 'r') as file:
+        file_data = file.read()
+    
+    file_data = file_data.replace(old_string, new_string)
+    
+    with open(file_path, 'w') as file:
+        file.write(file_data)
+
+def float_to_scientific_notation(number):
+    # Set the precision high enough to handle most cases
+    getcontext().prec = 50
+    
+    # Use Decimal for precise representation
+    decimal_number = Decimal(str(number))
+    # Round to significant digits to avoid precision issues
+    rounded_number = decimal_number.quantize(Decimal('1e-15'), rounding=ROUND_HALF_UP)
+    # Convert to scientific notation
+    scientific_notation = format(rounded_number, ".16e")
+    # Split into coefficient and exponent
+    coefficient, exponent = scientific_notation.split('e')
+    # Strip unnecessary trailing zeroes from coefficient
+    coefficient = coefficient.rstrip('0').rstrip('.')
+    # Reassemble the scientific notation
+    return f"{coefficient}e{int(exponent)}"
+
 def run_pressure_sweep(base_pressures, kick_pressure):
+
+        replace_string_in_file("src/bash_scripts/sim_sweep_pressure.sh", "REPLACE_THIS_WITH_KICK_PRESSURE_SCI", kick_pressure)
         
         base_pressures = base_pressures.lower().split()
 
@@ -38,12 +105,19 @@ def run_pressure_sweep(base_pressures, kick_pressure):
             start = float(base_pressures[1])
             stop = float(base_pressures[2])
             step = float(base_pressures[3])
-            base_pressures = [i for i in np.arange(start, stop, step)]
+            base_pressures = [float_to_scientific_notation(i) for i in np.arange(start, stop, step)]
         else:
-            base_pressures = [float(i) for i in base_pressures[1:]]
+            base_pressures = [i for i in base_pressures[1:]]
+
+        print("Base pressure list: " + base_pressures)
+        print("Kick pressure: " + kick_pressure)
         
         for base_pressure in base_pressures:
-             
+            replace_string_in_file("src/bash_scripts/sim_sweep_pressure.sh", "REPLACE_THIS_WITH_BASE_PRESSURE_SCI", base_pressure)
+            run_openfoam_command("src/bash_scripts/sim_sweep_pressure.sh")
+            replace_string_in_file("src/bash_scripts/sim_sweep_pressure.sh", base_pressure, "REPLACE_THIS_WITH_BASE_PRESSURE_SCI")
+
+        replace_string_in_file("src/bash_scripts/sim_sweep_pressure.sh", kick_pressure, "REPLACE_THIS_WITH_KICK_PRESSURE_SCI")
 
         return 0
 
@@ -70,9 +144,5 @@ def run_groove_height_sweep(base_pressures, kick_pressure, groove_heights):
         
         return 0
     
-
-    
-
-
 if __name__ == "__main__":
     main()
