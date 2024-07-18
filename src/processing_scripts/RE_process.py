@@ -20,7 +20,7 @@ for i, j in slice_df.iterrows():
     u_sum += j.iloc[10] * (j.iloc[1] - prev_x)
     prev_x = j.iloc[1]
 
-avg_u = u_sum/channel_height
+avg_u = (3/2)*u_sum/channel_height
 
 characteristic_length = 0.01
 
