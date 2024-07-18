@@ -78,6 +78,23 @@ def replace_string_in_file(file_path, old_string, new_string):
     with open(file_path, 'w') as file:
         file.write(file_data)
 
+def replace_nth_line(file_path, n, new_line):
+    # Read the file contents into a list
+    with open(file_path, 'r') as file:
+        lines = file.readlines()
+    
+    # Check if the specified line number is valid
+    if n > len(lines) or n < 1:
+        print(f"Line number {n} is out of range.")
+        return
+    
+    # Replace the nth line (n-1 because list index starts from 0)
+    lines[n-1] = new_line + '\n'
+    
+    # Write the updated list of lines back to the file
+    with open(file_path, 'w') as file:
+        file.writelines(lines)
+
 def float_to_scientific_notation(number):
     # Set the precision high enough to handle most cases
     getcontext().prec = 50
@@ -97,7 +114,7 @@ def float_to_scientific_notation(number):
 
 def run_pressure_sweep(base_pressures, kick_pressure):
 
-        replace_string_in_file("src/bash_scripts/sim_sweep_pressure.sh", "REPLACE_THIS_WITH_KICK_PRESSURE_SCI", kick_pressure)
+        replace_nth_line("src/bash_scripts/sim_sweep_pressure.sh", 4, f"kick_pressure_sci={kick_pressure}")
         
         base_pressures = base_pressures.lower().split()
 
@@ -109,15 +126,22 @@ def run_pressure_sweep(base_pressures, kick_pressure):
         else:
             base_pressures = [i for i in base_pressures[1:]]
 
-        print("Base pressure list: " + base_pressures)
+        print("Base pressure list: " + str(base_pressures))
         print("Kick pressure: " + kick_pressure)
         
         for base_pressure in base_pressures:
-            replace_string_in_file("src/bash_scripts/sim_sweep_pressure.sh", "REPLACE_THIS_WITH_BASE_PRESSURE_SCI", base_pressure)
+            replace_nth_line("src/bash_scripts/sim_sweep_pressure.sh", 5, f"base_pressure_sci={base_pressure}")
             run_openfoam_command("src/bash_scripts/sim_sweep_pressure.sh")
-            replace_string_in_file("src/bash_scripts/sim_sweep_pressure.sh", base_pressure, "REPLACE_THIS_WITH_BASE_PRESSURE_SCI")
 
-        replace_string_in_file("src/bash_scripts/sim_sweep_pressure.sh", kick_pressure, "REPLACE_THIS_WITH_KICK_PRESSURE_SCI")
+        #post processing
+
+        for base_pressure in base_pressures:
+            replace_nth_line("src/bash_scripts/post_processing.sh", 3, f"base_pressure_sci={base_pressure}")
+            subprocess.run(["./src/bash_scripts/post_processing.sh"])
+
+        subprocess.run(['python3', 'src/processing_scripts/get_grid_plots.py', "data/pressure_sweep/cases"])
+        subprocess.run(['python3', 'src/processing_scripts/RE_vs_decay.py', "data/pressure_sweep/cases"])
+
 
         return 0
 

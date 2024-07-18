@@ -2,6 +2,7 @@ import os
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 from math import ceil
+import sys
 
 def create_graph_grid(base_dir, output_file):
     case_dirs = sorted([d for d in os.listdir(base_dir) if os.path.isdir(os.path.join(base_dir, d))], key=lambda x: float(x.replace('e-', 'e-')))
@@ -32,6 +33,8 @@ def create_graph_grid(base_dir, output_file):
     plt.show()
 
 if __name__ == "__main__":
-    base_dir = "cases"
-    output_file = "Uy_vs_time_grid.png"
+
+    base_dir = sys.argv[1]
+    output_file = os.path.join(base_dir, 'Uy_vs_time_grid.png')
+
     create_graph_grid(base_dir, output_file)

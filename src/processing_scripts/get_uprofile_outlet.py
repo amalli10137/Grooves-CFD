@@ -5,7 +5,9 @@
 
 import sys
 import re
-pressure_kick = sys.argv[1]
+
+base_pressure = sys.argv[1]
+sweep = sys.argv[2]
 
 def extract_number_before_e(string):
     match = re.match(r'^\d+(?=e)', string)
@@ -13,8 +15,8 @@ def extract_number_before_e(string):
         return match.group(0)
     return None
 
-num_for_naming = extract_number_before_e(pressure_kick)
-replace_file_name = "icoFoam_" + str(num_for_naming)
+replace_file_name = "icofoam_" + base_pressure
+
 
 #### import the simple module from the paraview
 from paraview.simple import *
@@ -22,7 +24,7 @@ from paraview.simple import *
 paraview.simple._DisableFirstRenderCameraReset()
 
 # create a new 'OpenFOAMReader'
-openfoam = OpenFOAMReader(registrationName='open.foam', FileName='/Users/amalli/Desktop/channel-cfd/pressure_sweep/cases/'+pressure_kick+'/'+replace_file_name+'/open.foam')
+openfoam = OpenFOAMReader(registrationName='open.foam', FileName='/Users/amalli/Desktop/grooves-cfd/data/'+sweep+'/cases/'+base_pressure+'/'+replace_file_name+'/open.foam')
 openfoam.MeshRegions = ['internalMesh']
 openfoam.CellArrays = ['U', 'p']
 
@@ -57,11 +59,11 @@ openfoamDisplay.SelectTangentArray = 'None'
 openfoamDisplay.OSPRayScaleArray = 'p'
 openfoamDisplay.OSPRayScaleFunction = 'PiecewiseFunction'
 openfoamDisplay.SelectOrientationVectors = 'U'
-openfoamDisplay.ScaleFactor = 0.010000000149011612
+openfoamDisplay.ScaleFactor = 0.005000000074505806
 openfoamDisplay.SelectScaleArray = 'p'
 openfoamDisplay.GlyphType = 'Arrow'
 openfoamDisplay.GlyphTableIndexArray = 'p'
-openfoamDisplay.GaussianRadius = 0.0005000000074505806
+openfoamDisplay.GaussianRadius = 0.0002500000037252903
 openfoamDisplay.SetScaleArray = ['POINTS', 'p']
 openfoamDisplay.ScaleTransferFunction = 'PiecewiseFunction'
 openfoamDisplay.OpacityArray = ['POINTS', 'p']
@@ -69,16 +71,16 @@ openfoamDisplay.OpacityTransferFunction = 'PiecewiseFunction'
 openfoamDisplay.DataAxesGrid = 'GridAxesRepresentation'
 openfoamDisplay.PolarAxes = 'PolarAxesRepresentation'
 openfoamDisplay.ScalarOpacityFunction = pPWF
-openfoamDisplay.ScalarOpacityUnitDistance = 0.007434966041896619
+openfoamDisplay.ScalarOpacityUnitDistance = 0.0037277870874113514
 openfoamDisplay.OpacityArrayName = ['POINTS', 'p']
 openfoamDisplay.SelectInputVectors = ['POINTS', 'U']
 openfoamDisplay.WriteLog = ''
 
 # init the 'PiecewiseFunction' selected for 'ScaleTransferFunction'
-openfoamDisplay.ScaleTransferFunction.Points = [-1.448479997634422e-05, 0.0, 0.5, 0.0, 5.239505298959557e-06, 1.0, 0.5, 0.0]
+openfoamDisplay.ScaleTransferFunction.Points = [-4.7956900743884034e-06, 0.0, 0.5, 0.0, 3.577310053515248e-06, 1.0, 0.5, 0.0]
 
 # init the 'PiecewiseFunction' selected for 'OpacityTransferFunction'
-openfoamDisplay.OpacityTransferFunction.Points = [-1.448479997634422e-05, 0.0, 0.5, 0.0, 5.239505298959557e-06, 1.0, 0.5, 0.0]
+openfoamDisplay.OpacityTransferFunction.Points = [-4.7956900743884034e-06, 0.0, 0.5, 0.0, 3.577310053515248e-06, 1.0, 0.5, 0.0]
 
 # reset view to fit data
 renderView1.ResetCamera(False)
@@ -97,12 +99,12 @@ pTF2D = GetTransferFunction2D('p')
 
 # create a new 'Plot Over Line'
 plotOverLine1 = PlotOverLine(registrationName='PlotOverLine1', Input=openfoam)
-plotOverLine1.Point1 = [0.0, -0.01600000075995922, 0.0]
-plotOverLine1.Point2 = [0.10000000149011612, 0.019999999552965164, 0.009999999776482582]
+plotOverLine1.Point1 = [0.0, -0.01679999940097332, 0.0]
+plotOverLine1.Point2 = [0.05000000074505806, 0.019999999552965164, 0.009999999776482582]
 
 # Properties modified on plotOverLine1
-plotOverLine1.Point1 = [0.1, 0.0, 0.005]
-plotOverLine1.Point2 = [0.10000000149011612, 0.019999999552965164, 0.005]
+plotOverLine1.Point1 = [0.05, 0.0, 0.005]
+plotOverLine1.Point2 = [0.05, 0.02, 0.005]
 
 # show data in view
 plotOverLine1Display = Show(plotOverLine1, renderView1, 'GeometryRepresentation')
@@ -132,10 +134,10 @@ plotOverLine1Display.SelectInputVectors = ['POINTS', 'U']
 plotOverLine1Display.WriteLog = ''
 
 # init the 'PiecewiseFunction' selected for 'ScaleTransferFunction'
-plotOverLine1Display.ScaleTransferFunction.Points = [-1.448479997634422e-05, 0.0, 0.5, 0.0, -1.2949150914209895e-05, 1.0, 0.5, 0.0]
+plotOverLine1Display.ScaleTransferFunction.Points = [-4.7956900743884034e-06, 0.0, 0.5, 0.0, -3.764482244150713e-06, 1.0, 0.5, 0.0]
 
 # init the 'PiecewiseFunction' selected for 'OpacityTransferFunction'
-plotOverLine1Display.OpacityTransferFunction.Points = [-1.448479997634422e-05, 0.0, 0.5, 0.0, -1.2949150914209895e-05, 1.0, 0.5, 0.0]
+plotOverLine1Display.OpacityTransferFunction.Points = [-4.7956900743884034e-06, 0.0, 0.5, 0.0, -3.764482244150713e-06, 1.0, 0.5, 0.0]
 
 # Create a new 'Line Chart View'
 lineChartView1 = CreateView('XYChartView')
@@ -171,9 +173,6 @@ plotOverLine1Display_1.SeriesLineThickness = ['Points_Magnitude', '2', 'Points_X
 plotOverLine1Display_1.SeriesMarkerStyle = ['Points_Magnitude', '0', 'Points_X', '0', 'Points_Y', '0', 'Points_Z', '0', 'U_Magnitude', '0', 'U_X', '0', 'U_Y', '0', 'U_Z', '0', 'arc_length', '0', 'p', '0', 'vtkValidPointMask', '0']
 plotOverLine1Display_1.SeriesMarkerSize = ['Points_Magnitude', '4', 'Points_X', '4', 'Points_Y', '4', 'Points_Z', '4', 'U_Magnitude', '4', 'U_X', '4', 'U_Y', '4', 'U_Z', '4', 'arc_length', '4', 'p', '4', 'vtkValidPointMask', '4']
 
-# update the view to ensure updated data information
-lineChartView1.Update()
-
 # split cell
 layout1.SplitVertical(2, 0.5)
 
@@ -195,7 +194,7 @@ AssignViewToLayout(view=spreadSheetView1, layout=layout1, hint=6)
 plotOverLine1Display_2.Assembly = ''
 
 # export view
-ExportView('/Users/amalli/Desktop/channel-cfd/pressure_sweep/cases/'+pressure_kick+'/uprofile_outlet.csv', view=spreadSheetView1, RealNumberNotation='Fixed')
+ExportView('/Users/amalli/Desktop/grooves-cfd/data/'+sweep+'/cases/'+base_pressure+'/uprofile_outlet.csv', view=spreadSheetView1, RealNumberNotation='Fixed')
 
 #================================================================
 # addendum: following script captures some of the application
@@ -212,9 +211,9 @@ layout1.SetSize(2275, 1440)
 # saving camera placements for views
 
 # current camera placement for renderView1
-renderView1.CameraPosition = [0.05000000074505806, 0.0019999993965029716, 0.21122912533538651]
-renderView1.CameraFocalPoint = [0.05000000074505806, 0.0019999993965029716, 0.004999999888241291]
-renderView1.CameraParallelScale = 0.05337602532055809
+renderView1.CameraPosition = [0.02500000037252903, 0.001600000075995922, 0.12648014048482598]
+renderView1.CameraFocalPoint = [0.02500000037252903, 0.001600000075995922, 0.004999999888241291]
+renderView1.CameraParallelScale = 0.03144137398812801
 
 #--------------------------------------------
 # uncomment the following to render all views

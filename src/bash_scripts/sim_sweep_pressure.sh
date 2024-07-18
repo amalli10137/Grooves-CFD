@@ -1,8 +1,8 @@
 #!/bin/bash
 
 #to be run from python control script
-kick_pressure_sci=0.0001
-base_pressure_sci=REPLACE_THIS_WITH_BASE_PRESSURE_SCI
+kick_pressure_sci=1e-4
+base_pressure_sci=8e-6
 
 cd "data/pressure_sweep/cases"
 mkdir -p "$base_pressure_sci"

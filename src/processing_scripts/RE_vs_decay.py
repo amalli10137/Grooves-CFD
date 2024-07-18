@@ -1,9 +1,11 @@
 import os
 import re
 import matplotlib.pyplot as plt
+import sys
 
 # Directory structure
-base_dir = 'cases'
+
+base_dir = sys.argv[1]
 
 # Initialize lists for x and y values
 reynolds_numbers = []

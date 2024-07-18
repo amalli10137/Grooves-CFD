@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-for n in {5..75..5};
-do 
-    #pvbatch "get_uprofile_outlet.py" "${n}e-6"
-    #python3 "RE_process.py" "cases/${n}e-6/uprofile_outlet.csv" "cases/${n}e-6/RE.txt" "${n}e-6"    
-    python3 "get_plot_over_time.py" "496,497,498,499,526,527,528,529" "${n}"
-    python3 "get_Uy_vs_time.py" "${n}"
-done
+base_pressure_sci=8e-6
+
+pvbatch "src/processing_scripts/get_uprofile_outlet.py" "$base_pressure_sci"
+python3 "src/processing_scripts/RE_process.py" "cases/$base_pressure_sci/uprofile_outlet.csv" "cases/$base_pressure_sci/RE.txt" "$base_pressure_sci"    
+python3 "src/processing_scripts/get_plot_over_time.py" "1520, 1521, 1522, 1565, 1566, 1567" "$base_pressure_sci"
+python3 "src/processing_scripts/get_Uy_vs_time.py" "$base_pressure_sci"
+
