@@ -31,7 +31,7 @@ def main():
         sys.exit(0) 
 
     if(args.pressure_sweep and not(args.groove_height_sweep)):
-         run_pressure_sweep(args.base_pressures, args.kick_pressure, args.process, args.run)
+         run_pressure_sweep(args.base_pressures, args.kick_pressure, args.process, args.run, args.new_sweep)
 
     if(args.groove_height_sweep):
          run_groove_height_sweep(args.base_pressures, args.kick_pressure, args.groove_heights)
@@ -114,7 +114,27 @@ def float_to_scientific_notation(number):
     # Reassemble the scientific notation
     return f"{coefficient}e{int(exponent)}"
 
-def run_pressure_sweep(base_pressures, kick_pressure, process, run):
+def run_pressure_sweep(base_pressures, kick_pressure, process=False, run=False, new_sweep=False):
+        
+        list_of_pressure_sweep_dirs = os.listdir("data/pressure_sweep")
+
+        if(new_sweep):
+            list_of_pressure_sweep_dirs.remove("icofoam_base")
+            list_of_pressure_sweep_dirs.remove("steady_state_base")
+
+            list_of_pressure_sweep_dirs = sorted(list_of_pressure_sweep_dirs)
+
+            print(list_of_pressure_sweep_dirs[-1])
+            if(list_of_pressure_sweep_dirs[-1] == "cases"):
+                new_index = 0
+            else: 
+                new_index = int(list_of_pressure_sweep_dirs[-1][-1]) + 1
+            
+
+            if os.path.exists("data/pressure_sweep/cases"):
+                os.rename("data/pressure_sweep/cases", f"data/pressure_sweep/cases_{new_index}")
+
+            os.makedirs("data/pressure_sweep/cases", exist_ok=True)
 
         replace_nth_line("src/bash_scripts/sim_sweep_pressure.sh", 4, f"kick_pressure_sci={kick_pressure}")
         
