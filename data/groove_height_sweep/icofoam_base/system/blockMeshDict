@@ -17,8 +17,7 @@ FoamFile
 scale   0.01;
 
 HAR 1;
-
-GROOVE_HEIGHT=replace_w_height;
+GH replace_w_height;
 
 vertices
 (
@@ -30,8 +29,8 @@ vertices
     (1 0 0)         // 5
     (4 0 0)         // 6
     (5 0 0)         // 7
-    (1 -$GROOVE_HEIGHT 0)     // 8
-    (4 -$GROOVE_HEIGHT 0)     // 9
+    (1 -$GH 0)     // 8
+    (4 -$GH 0)     // 9
 
     (0 2 $HAR)      // 10
     (1 2 $HAR)      // 11
@@ -41,8 +40,8 @@ vertices
     (1 0 $HAR)      // 15
     (4 0 $HAR)      // 16
     (5 0 $HAR)      // 17
-    (1 -$GROOVE_HEIGHT $HAR)  // 18
-    (4 -$GROOVE_HEIGHT $HAR)  // 19
+    (1 -$GH $HAR)  // 18
+    (4 -$GH $HAR)  // 19
 
 );
 

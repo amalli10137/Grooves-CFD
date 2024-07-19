@@ -164,7 +164,6 @@ def run_pressure_sweep(base_pressures, kick_pressure, process=False, run=False, 
 
             replace_nth_line("src/bash_scripts/post_processing.sh", 4, 'sweep_type="pressure_sweep"')
 
-
             for base_pressure in base_pressures:
                 replace_nth_line("src/bash_scripts/post_processing.sh", 3, f"base_pressure_sci={base_pressure}")
                 subprocess.run(["./src/bash_scripts/post_processing.sh"])
@@ -172,10 +171,9 @@ def run_pressure_sweep(base_pressures, kick_pressure, process=False, run=False, 
             subprocess.run(['python3', 'src/processing_scripts/get_grid_plots.py', "data/pressure_sweep/cases"])
             subprocess.run(['python3', 'src/processing_scripts/RE_vs_decay.py', "data/pressure_sweep/cases"])
 
-
         return 0
 
-def run_groove_height_sweep(base_pressures, kick_pressure, groove_heights):
+def run_groove_height_sweep(base_pressures, kick_pressure, groove_heights, process=False, run=False, new_sweep=False):
         
         base_pressures = base_pressures.lower().split()
         groove_heights = groove_heights.lower().split()
