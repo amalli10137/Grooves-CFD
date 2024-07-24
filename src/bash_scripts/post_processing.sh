@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-base_pressure_sci=1e-5
+base_pressure_sci=245e-7
 sweep_type="pressure_sweep"
 
 pvbatch "src/processing_scripts/get_uprofile_outlet.py" "$base_pressure_sci" "$sweep_type"

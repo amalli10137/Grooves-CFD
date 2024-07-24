@@ -146,7 +146,7 @@ def run_pressure_sweep(base_pressures, kick_pressure, process=False, run=False, 
             step = float(base_pressures[3])
             base_pressures = [float_to_scientific_notation(i) for i in np.arange(start, stop, step)]
         else:
-            base_pressures = [i for i in base_pressures[1:]]
+            base_pressures = [i for i in base_pressures[0:]]
 
         print("Base pressure list: " + str(base_pressures))
         print("Kick pressure: " + kick_pressure)
