@@ -1,1 +1,60 @@
-#temporary file, will be replaced when running code
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2306                                  |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    arch        "LSB;label=32;scalar=64";
+    class       volScalarField;
+    location    "0";
+    object      p;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+dimensions      [0 2 -2 0 0 0 0];
+
+
+SS    -.000025;
+kick  -.001;
+
+
+internalField   uniform 0; 
+
+boundaryField
+{
+    inlet
+    {
+        type            uniformJump;
+        patchType       cyclic;
+        jumpTable       table ((0 $SS) (25 $SS) (25.5 $kick) (26 $SS));
+        value           $internalField;
+
+    }
+    outlet
+    {
+        type            uniformJump;
+        patchType       cyclic;
+        value           $internalField;
+
+    }
+    Walls
+    {
+        type            zeroGradient;
+    }
+    back
+    {
+        type            empty;
+    }
+    front
+    {
+        type            empty;
+    }
+}
+
+
+// ************************************************************************* //

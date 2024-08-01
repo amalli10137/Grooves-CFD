@@ -16,22 +16,41 @@ FoamFile
 
 ddtSchemes
 {
-    default         Euler;
+    // Most Stable:
+    // default         Euler;
+
+    // Mid Stable, Mid Accurate:
+    // default         CrankNicolson 0.9;
+
+    // Most Accurate:
+    default         backward;
 }
 
 gradSchemes
 {
-    default         Gauss linear;
+    // Most Stable:
+    // default         Gauss linear;
+
+    // Most Accurate:
+    default         leastSquares;
 }
 
 divSchemes
 {
     default         none;
-    div(phi,U)      Gauss limitedLinearV 1;
+    // Most Stable:
+    // div(phi,U)      Gauss upwind;
+
+    // Mid Stable, Mid Accurate:
+    // div(phi,U)      Gauss limitedLinearV 1;
+
+    // Most Accurate:
+    div(phi,U)      Gauss linear;
 }
 
 laplacianSchemes
 {
+    // default         Gause <interpolation> <SnGrad>
     default         Gauss linear corrected;
 }
 
