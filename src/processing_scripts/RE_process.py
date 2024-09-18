@@ -5,6 +5,7 @@ import sys
 file_name = sys.argv[1]
 RE_dir = sys.argv[2]
 df = pd.read_csv(file_name)
+base_pressure_sci = sys.argv[3]
 
 channel_height = 0.02
 
@@ -29,7 +30,7 @@ viscosity = 8.9e-7
 reynolds = avg_u * characteristic_length / viscosity
 
 with open(RE_dir, "w+") as file1:
-    file1.write(str(reynolds) + "\n" + sys.argv[3])
+    file1.write(str(reynolds) + "\n" + base_pressure_sci)
 
 
 

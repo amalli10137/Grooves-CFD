@@ -23,7 +23,7 @@ for subfolder in os.listdir(base_dir):
                 if len(lines) >= 3:
                     try:
                         groove_height = float(lines[1].strip())
-                        decay_rate = -float(lines[2].strip())
+                        decay_rate = float(lines[2].strip())
                         groove_heights.append(groove_height)
                         decay_rates.append(decay_rate)
                     except ValueError:

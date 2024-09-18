@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-base_pressure_sci=245e-7
+base_pressure_sci=19e-6
 sweep_type="groove_height_sweep"
 
-for base_pressure_sci in 0.7 0.8 0.9 1 1.1 1.2 1.3 1.4 1.5 1.6 1.7 1.8 1.9 1.68 2 2.1
+for base_pressure_sci in 0.7 0.725 0.75 0.775 0.8 0.9 1 1.1 1.2 1.3 1.4 1.5 1.6 1.7 1.8 1.9 1.68 2 2.1 2.2 2.3 2.4 2.5 2.6 2.7 2.8 2.9 3
 do
 
     pvbatch "src/processing_scripts/get_uprofile_outlet.py" "$base_pressure_sci" "$sweep_type"
@@ -14,3 +14,4 @@ done
 
 python3 'src/processing_scripts/get_grid_plots.py' "data/groove_height_sweep/cases"
 python3 'src/processing_scripts/height_vs_decay.py' "data/groove_height_sweep/cases"
+python3 'src/processing_scripts/height_vs_re.py' "data/groove_height_sweep/cases"

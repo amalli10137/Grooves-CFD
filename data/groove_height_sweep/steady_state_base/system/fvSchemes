@@ -21,7 +21,11 @@ ddtSchemes
 
 gradSchemes
 {
-    default         Gauss linear;
+    // Most Stable:
+    // default         Gauss linear;
+
+    // Most Accurate:
+    default         leastSquares;
 }
 
 divSchemes
@@ -41,6 +45,7 @@ divSchemes
 
 laplacianSchemes
 {
+    // default         Gause <interpolation> <SnGrad>
     default         Gauss linear corrected;
 }
 

@@ -34,7 +34,7 @@ def main():
          run_pressure_sweep(args.base_pressures, args.kick_pressure, args.process, args.run, args.new_sweep)
 
     if(args.groove_height_sweep):
-         run_groove_height_sweep(args.base_pressures, args.kick_pressure, args.groove_heights)
+         run_groove_height_sweep(args.base_pressures, args.kick_pressure, args.groove_heights, args.process, args.run, args.new_sweep)
 
 def run_openfoam_command(script_path):
     try:
@@ -175,6 +175,26 @@ def run_pressure_sweep(base_pressures, kick_pressure, process=False, run=False, 
 
 def run_groove_height_sweep(base_pressures, kick_pressure, groove_heights, process=False, run=False, new_sweep=False):
         
+        list_of_sweep_dirs = os.listdir("data/groove_height_sweep")
+
+        if(new_sweep):
+            list_of_sweep_dirs.remove("icofoam_base")
+            list_of_sweep_dirs.remove("steady_state_base")
+
+            list_of_sweep_dirs = sorted(list_of_sweep_dirs)
+
+            print(list_of_sweep_dirs[-1])
+            if(list_of_sweep_dirs[-1] == "cases"):
+                new_index = 0
+            else: 
+                new_index = int(list_of_sweep_dirs[-1][-1]) + 1
+            
+
+            if os.path.exists("data/groove_height_sweep/cases"):
+                os.rename("data/groove_height_sweep/cases", f"data/groove_height_sweep/cases_{new_index}")
+
+            os.makedirs("data/groove_height_sweep/cases", exist_ok=True)
+        
         base_pressures = base_pressures.lower().split()
         groove_heights = groove_heights.lower().split()
 
@@ -182,17 +202,58 @@ def run_groove_height_sweep(base_pressures, kick_pressure, groove_heights, proce
             start = float(base_pressures[1])
             stop = float(base_pressures[2])
             step = float(base_pressures[3])
-            base_pressures = [i for i in np.arange(start, stop, step)]
+            base_pressures = [float_to_scientific_notation(i) for i in np.arange(start, stop, step)]
         else:
-            base_pressures = [float(i) for i in base_pressures[1:]]
+            base_pressures = [i for i in base_pressures[0:]]
+
 
         if groove_heights[0].lower() == "iterate:":
             start = float(groove_heights[1])
             stop = float(groove_heights[2])
             step = float(groove_heights[3])
-            groove_heights = [i for i in np.arange(start, stop, step)]
+            groove_heights = [round(i, 2) for i in np.arange(start, stop, step)]
         else:
-            groove_heights = [float(i) for i in base_pressures[1:]]
+            groove_heights = [i for i in groove_heights[1:]]
+
+        for groove_height in groove_heights:
+            print(str(groove_height))
+            for base_pressure in base_pressures:
+                print("\t" + str(base_pressure))
+
+        replace_nth_line("src/bash_scripts/sim_sweep_groove_height.sh", 4, f"kick_pressure_sci={kick_pressure}")
+
+        #running simulations
+        if(run):
+
+            for groove_height in groove_heights:
+                
+                newpath = f"data/groove_height_sweep/cases/{groove_height}"
+                if not os.path.exists(newpath):
+                    os.makedirs(newpath)
+
+                replace_nth_line("src/bash_scripts/sim_sweep_groove_height.sh", 6, f"groove_height={groove_height}")
+
+                for base_pressure in base_pressures:
+
+                    replace_nth_line("src/bash_scripts/sim_sweep_groove_height.sh", 5, f"base_pressure_sci={base_pressure}")
+
+                    run_openfoam_command("src/bash_scripts/sim_sweep_groove_height.sh")
+
+        
+        #post processing
+
+        if(process):
+
+            for groove_height in groove_heights:
+
+                replace_nth_line("src/bash_scripts/post_processing_grooves.sh", 5, f"groove_height={groove_height}")
+
+                for base_pressure in base_pressures:
+                    replace_nth_line("src/bash_scripts/post_processing_grooves.sh", 3, f"base_pressure_sci={base_pressure}")
+                    subprocess.run(["./src/bash_scripts/post_processing_grooves.sh"])
+
+                subprocess.run(['python3', 'src/processing_scripts/get_grid_plots.py', "data/groove_height_sweep/cases/" + str(groove_height)])
+                subprocess.run(['python3', 'src/processing_scripts/RE_vs_decay.py', "data/groove_height_sweep/cases/" + str(groove_height)])
         
         return 0
     
