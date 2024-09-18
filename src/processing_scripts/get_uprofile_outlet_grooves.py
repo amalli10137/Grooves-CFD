@@ -18,7 +18,7 @@ from paraview.simple import *
 paraview.simple._DisableFirstRenderCameraReset()
 
 # create a new 'OpenFOAMReader'
-openfoam = OpenFOAMReader(registrationName='open.foam', FileName='/Users/amalli/Desktop/grooves-cfd/data/groove_height_sweep/cases/'+groove_height+'/'+ base_pressure + "/" + replace_file_name+'/open.foam')
+openfoam = OpenFOAMReader(registrationName='open.foam', FileName='/Users/amalli/Local_Storage/grooves-cfd/data/groove_height_sweep/cases/'+groove_height+'/'+ base_pressure + "/" + replace_file_name+'/open.foam')
 openfoam.MeshRegions = ['internalMesh']
 openfoam.CellArrays = ['U', 'p']
 
@@ -188,7 +188,7 @@ AssignViewToLayout(view=spreadSheetView1, layout=layout1, hint=6)
 plotOverLine1Display_2.Assembly = ''
 
 # export view
-ExportView('/Users/amalli/Desktop/grooves-cfd/data/groove_height_sweep/cases/'+groove_height+'/' +base_pressure+ '/uprofile_outlet.csv', view=spreadSheetView1, RealNumberNotation='Fixed')
+ExportView('/Users/amalli/Local_Storage/grooves-cfd/data/groove_height_sweep/cases/'+groove_height+'/' +base_pressure+ '/uprofile_outlet.csv', view=spreadSheetView1, RealNumberNotation='Fixed')
 
 #================================================================
 # addendum: following script captures some of the application
