@@ -213,7 +213,7 @@ def run_groove_height_sweep(base_pressures, kick_pressure, groove_heights, proce
             step = float(groove_heights[3])
             groove_heights = [round(i, 2) for i in np.arange(start, stop, step)]
         else:
-            groove_heights = [i for i in groove_heights[1:]]
+            groove_heights = [i for i in groove_heights[0:]]
 
         for groove_height in groove_heights:
             print(str(groove_height))

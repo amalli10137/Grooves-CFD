@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-base_pressure_sci=2.1e-5
+base_pressure_sci=2.3e-5
 sweep_type="groove_height_sweep"
-groove_height=2.1
+groove_height=1.1
 
 pvbatch "src/processing_scripts/get_uprofile_outlet_grooves.py" "$base_pressure_sci" "$groove_height"
 python3 "src/processing_scripts/RE_process.py" "data/$sweep_type/cases/$groove_height/$base_pressure_sci/uprofile_outlet.csv" "data/$sweep_type/cases/$groove_height/$base_pressure_sci/RE.txt" "$base_pressure_sci"    
