@@ -6,7 +6,7 @@ import sys
 
 def create_graph_grid(base_dir, output_file):
     case_dirs = sorted([d for d in os.listdir(base_dir) if os.path.isdir(os.path.join(base_dir, d))], key=lambda x: float(x.replace('e-', 'e-')))
-    image_files = [os.path.join(base_dir, case, "Uy_vs_time.png") for case in case_dirs]
+    image_files = [os.path.join(base_dir, case, sys.argv[2]) for case in case_dirs]
 
     # Determine the grid size
     num_images = len(image_files)
@@ -35,6 +35,6 @@ def create_graph_grid(base_dir, output_file):
 if __name__ == "__main__":
 
     base_dir = sys.argv[1]
-    output_file = os.path.join(base_dir, 'Uy_vs_time_grid.png')
+    output_file = os.path.join(base_dir, sys.argv[3])
 
     create_graph_grid(base_dir, output_file)

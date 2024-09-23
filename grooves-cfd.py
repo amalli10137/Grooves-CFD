@@ -252,7 +252,8 @@ def run_groove_height_sweep(base_pressures, kick_pressure, groove_heights, proce
                     replace_nth_line("src/bash_scripts/post_processing_grooves.sh", 3, f"base_pressure_sci={base_pressure}")
                     subprocess.run(["./src/bash_scripts/post_processing_grooves.sh"])
 
-                subprocess.run(['python3', 'src/processing_scripts/get_grid_plots.py', "data/groove_height_sweep/cases/" + str(groove_height)])
+                subprocess.run(['python3', 'src/processing_scripts/get_grid_plots.py', "data/groove_height_sweep/cases/" + str(groove_height), 'Uy_vs_time.png', 'Uy_vs_time_grid.png'])
+                subprocess.run(['python3', 'src/processing_scripts/get_grid_plots.py', "data/groove_height_sweep/cases/" + str(groove_height), 'Uy_vs_time_no_fit.png', "Uy_vs_time_grid_no_fit.png"])
                 subprocess.run(['python3', 'src/processing_scripts/RE_vs_decay.py', "data/groove_height_sweep/cases/" + str(groove_height)])
         
         return 0

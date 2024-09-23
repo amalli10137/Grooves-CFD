@@ -3,7 +3,7 @@
 #to be run from python control script
 kick_pressure_sci=1e-4
 base_pressure_sci=2.3e-5
-groove_height=1.1
+groove_height=4.0
 
 cd "data/groove_height_sweep/cases/$groove_height"
 mkdir -p "$base_pressure_sci"
