@@ -1,3 +1,16 @@
 .DS_Store
 venv/
 data/**/case*/**
+passive_scalar/
+constant_flux/
+# OpenFOAM generated data
+**/0/
+**/polyMesh/
+**/postProcessing/
+**/processor*/
+**/dynamicCode/
+*.o
+*.so
+*.dep
+*.log
+SolverOutput

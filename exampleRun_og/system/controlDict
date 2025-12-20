@@ -1,0 +1,65 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  11
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      controlDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+libs ("libmonBoundAdsorb.so");
+
+application     foamMultiRun;
+
+regionSolvers
+{
+    channel         DirACFoamChanSimple;
+    wall            DirACFoamWallAdsorb;
+}
+
+startFrom       startTime;
+
+startTime       0;
+
+stopAt          endTime;
+
+endTime         400;
+
+deltaT          1E-15;
+
+writeControl    adjustableRunTime;
+
+writeInterval   1E-00;
+
+purgeWrite      0;
+
+writeFormat     ascii;
+
+writePrecision  9;
+
+writeCompression off;
+
+timeFormat      general;
+
+timePrecision   9;
+
+runTimeModifiable true;
+
+maxCo           1.0;
+
+maxDi           1.0e3;
+
+maxCO2Delta     1e+30;
+
+maxCO2aDelta    1e-04;
+
+adjustTimeStep  true;
+
+// ************************************************************************* //

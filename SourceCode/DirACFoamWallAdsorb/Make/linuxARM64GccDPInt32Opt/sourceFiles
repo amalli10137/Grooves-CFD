@@ -1,0 +1,9 @@
+SOURCE = \
+setRDeltaT.C \
+moveMesh.C \
+momentumPredictor.C \
+thermophysicalPredictor.C \
+correctPressure.C \
+DirACFoamWallAdsorb.C \
+
+# sources
